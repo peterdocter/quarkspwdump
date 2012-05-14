@@ -16,11 +16,13 @@ It currently extracts :
  - Local accounts NT/LM hashes + history
  - Domain accounts NT/LM hashes + history
  - Cached domain password
- - Bitlocker recovery information (recovery passwords & key packages) Supported OS : XP/2003/Vista/7/2008/8
+ - Bitlocker recovery information (recovery passwords & key packages) 
+ 
+Supported OS : XP/2003/Vista/7/2008/8
 
 Why another hash dumper?
- - Cause no tools can actually dump all kind of hash, a combination of tools is always needed.
- - We encounter some crash with libeseod library and some NTDS.dit files.
+ - No tools can actually dump all kind of hash, a combination of tools is always needed.
+ - We encounter some rare crash with libesedb library and some NTDS.dit files.
  - We think it's safer to directly use Microsoft JET/ESE API for parsing databases originally
    built with same functions.
  - Bitlocker case is added even if some specific Microsoft tools could be used to dump those information.
@@ -60,13 +62,15 @@ Some command examples:
 - Dump domain hashes from NTDS.dit with its history
    #quarks-pwdump.exe --dump-bitlocker --output c:\bitlocker.txt c:\ntds.dit
 
-   
+All features require administrator privileges.
+
+
 2 / TECHNICAL APPROACH
 ======================
 
  - Bitlocker and domain accounts information are extracted offline from NTDS.dit
    (see next section for NTDS file recovery)
-   Everything should be done on domain controller. No code injection or service installation.
+   Everything must be done on domain controller. No code injection or service installation.
    It's not currently full offline dump cause Quarks PwDump is dynamically linked with ESENT.dll
    which differs between Windows version. For example, it's not possible to parse Win 2008 ntds.dit
    file from XP.
@@ -115,6 +119,5 @@ Here is a way to backup NTDS.dit file while a domain controller is running:
  - Make NTDS parsing system independant (esent.dll)
  - Use VSS COMM API to directly copy NTDS.dit file from our tool
  - Make tests on more environments with different configuration (NTLM storage GP, history size...)
- - Parsing specific Bitlocker TPM information in NTDS.dit
-
+ - Parsing specific Bitlocker TPM owner information in NTDS.dit
 
