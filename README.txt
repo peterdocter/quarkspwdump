@@ -121,3 +121,5 @@ Here is a way to backup NTDS.dit file while a domain controller is running:
  - Make tests on more environments with different configuration (NTLM storage GP, history size...)
  - Parsing specific Bitlocker TPM owner information in NTDS.dit
 
+
+contact@quarkslab.com
