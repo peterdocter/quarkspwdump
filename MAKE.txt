@@ -22,3 +22,5 @@ QuarksPwDump.cpp: Entry point
 
 
 It should compile without any problems on VS 2008 or 2010+ versions.
+
+Do not forget to use "Release" version, Debug one is not configured.
