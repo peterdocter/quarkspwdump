@@ -165,6 +165,7 @@ BOOL CommandDispatcher() {
 				puts("OK");
 				printf("[+] Parsing datatable...");
 				if(NTDS_NTLM_ParseDatabase(&parser,&ldapAccountDatabase,&PEK_ciphered,OPT_WITH_HISTORY)!=NTDS_SUCCESS) {
+					puts("Fatal error, wrong file?");
 					if(NTDS_CloseDatabase(&parser))
 						NTDS_ParserClose(&parser);
 					return FALSE;
@@ -305,15 +306,14 @@ BOOL CommandDispatcher() {
 			else {
 				puts("OK");
 				printf("[+] Parsing datatable...");
-				if(NTDS_Bitlocker_ParseDatabase(&parser,&bitlockerAccountDatabase)!=NTDS_SUCCESS) {
-					if(NTDS_CloseDatabase(&parser))
-						NTDS_ParserClose(&parser);
-					return FALSE;
+				ret_code = NTDS_Bitlocker_ParseDatabase(&parser,&bitlockerAccountDatabase);
+				if(ret_code==NTDS_SUCCESS)  {
+					puts("OK");
+					Bitlocker_DumpAll(bitlockerAccountDatabase,OPT_OUT_STDOUT,OPT_OUTPUT_FILENAME);
 				}
-				puts("OK");
-
-				Bitlocker_DumpAll(bitlockerAccountDatabase,OPT_OUT_STDOUT,OPT_OUTPUT_FILENAME);
-
+				else
+					puts("Error: bad file or no Bitlocker account there");
+				
 				if(bitlockerAccountDatabase)
 					bitlockerAccountInfoFreeAll(bitlockerAccountDatabase);
 

@@ -2,7 +2,7 @@
 
 
 /*
- * Print JET engines error
+ * Print JET engine errors
  */
 void NTDS_ErrorPrint(s_parser *parser,LPSTR function,JET_ERR jet_err) {
 	TCHAR szErrString[1024];
