@@ -489,8 +489,9 @@ void SAM_NTLM_DumpLc(s_localAccountInfo *localAccountEntry,LPSTR szOut) {
 BOOL SAM_NTLM_DumpAll(ll_localAccountInfo localAccountInfo,NT_DUMP_TYPE dump_type,BOOL isStdout,LPSTR outFileName) {
 	ll_localAccountInfo currentAccount = localAccountInfo;
 	TCHAR szHashLine[4096];
-	DWORD dwNbWritten;
+	DWORD dwNbWritten,count=0;
 	HANDLE hFile;
+	BOOL ret;
 
 	if(!currentAccount)
 		return FALSE;
@@ -513,12 +514,18 @@ BOOL SAM_NTLM_DumpAll(ll_localAccountInfo localAccountInfo,NT_DUMP_TYPE dump_typ
 			WriteFile(hFile,szHashLine,lstrlen(szHashLine),&dwNbWritten,NULL);
 		}
 		currentAccount = currentAccount->next;
+		count++;
 	}while(currentAccount);
 
 	if(!isStdout) 
 		CloseHandle(hFile);
 	else
 		puts(SZ_DUMP_END);
+
+	if(isStdout)
+		printf("\n%d dumped accounts\n\n",count);
+	else
+		printf("\n%d dumped accounts to %s\n\n",count,outFileName);
 
 	return TRUE;
 }
@@ -531,7 +538,7 @@ BOOL SAM_NTLM_DumpAll(ll_localAccountInfo localAccountInfo,NT_DUMP_TYPE dump_typ
 BOOL SAM_NTLM_Cached_DumpAll(ll_cachedAccountInfo cachedAccountInfo,NT_DUMP_TYPE dump_type,BOOL isStdout,LPSTR outFileName) {
 	ll_cachedAccountInfo currentAccount = cachedAccountInfo;
 	TCHAR szHashLine[1024],szNT[128];
-	DWORD dwNbWritten;
+	DWORD dwNbWritten,count=0;
 	HANDLE hFile;
 
 	if(!isStdout) {
@@ -549,6 +556,7 @@ BOOL SAM_NTLM_Cached_DumpAll(ll_cachedAccountInfo cachedAccountInfo,NT_DUMP_TYPE
 				currentAccount->info.szDomain,
 				currentAccount->info.szFullDomain,
 				szNT);
+			count++;
 			if(isStdout)
 				puts(szHashLine);
 			else
@@ -561,6 +569,11 @@ BOOL SAM_NTLM_Cached_DumpAll(ll_cachedAccountInfo cachedAccountInfo,NT_DUMP_TYPE
 		CloseHandle(hFile);
 	else
 		puts(SZ_DUMP_END);
+
+	if(isStdout)
+		printf("\n%d dumped accounts\n\n",count);
+	else
+		printf("\n%d dumped accounts to %s\n\n",count,outFileName);
 
 	return TRUE;
 }
@@ -616,7 +629,7 @@ void Bitlocker_Dump(s_bitlockerAccountInfo *bitlockerAccountEntry,LPSTR szOut) {
 BOOL Bitlocker_DumpAll(ll_bitlockerAccountInfo bitlockerAccountInfo,BOOL isStdout,LPSTR outFileName) {
 	ll_bitlockerAccountInfo currentAccount = bitlockerAccountInfo;
 	TCHAR szBitlockerEntry[2048];
-	DWORD dwNbWritten;
+	DWORD dwNbWritten,count=0;
 	HANDLE hFile;
 
 	if(!currentAccount)
@@ -631,6 +644,7 @@ BOOL Bitlocker_DumpAll(ll_bitlockerAccountInfo bitlockerAccountInfo,BOOL isStdou
 
 	do{
 		Bitlocker_Dump(&currentAccount->info,szBitlockerEntry);
+		count++;
 		if(isStdout)
 			printf(szBitlockerEntry);
 		else
@@ -642,6 +656,11 @@ BOOL Bitlocker_DumpAll(ll_bitlockerAccountInfo bitlockerAccountInfo,BOOL isStdou
 		CloseHandle(hFile);
 	else
 		puts(SZ_DUMP_END);
+
+	if(isStdout)
+		printf("\n%d dumped entries\n\n",count);
+	else
+		printf("\n%d dumped entries to %s\n\n",count,outFileName);
 
 	return TRUE;
 }

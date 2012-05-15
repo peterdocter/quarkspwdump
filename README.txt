@@ -51,6 +51,8 @@ quarks-pwdump.exe <option(s)> <NTDS file>
 Dump options must be user all at once.
 In all cases, the tool must be executed on the targeted operating system.
 
+Do not forget to always put NTDS.dit filepath at the end of the command line for involved options.
+
 Some command examples:
 
  - Dump domain hashes from NTDS.dit with its history
