@@ -12,19 +12,20 @@ static TCHAR APP_BANNER[10*91] = {
 	"/   \\_/.  \\|  |  / / __ \\_|  | \\/|    <  \\___ \\  |    |     \\     /  |    `   \\|  |  /|  Y Y  \\|  |_> > \r\n"
 	"\\_____\\ \\_/|____/ (____  /|__|   |__|_ \\/____  > |____|      \\/\\_/  /_______  /|____/ |__|_|  /|   __/  \r\n"
 	"       \\__>            \\/             \\/     \\/                             \\/              \\/ |__|     \r\n"
-	"                                                                            v0.1b -<(QuarksLab)>-\r\n"
+	"                                                                            v0.2b -<(QuarksLab)>-\r\n"
 };
 
 static TCHAR APP_USAGE[10*100] = {
-	"quarks-pwdump.exe <options> <NTDS file>\r\n"
+	"quarks-pwdump.exe <options>\r\n"
 	"Options : \r\n"
-	"--dump-hash-local\r\n"
-	"--dump-hash-domain-cached\r\n"
-	"--dump-hash-domain (NTDS_FILE must be specified)\r\n"
-	"--dump-bitlocker (NTDS_FILE must be specified)\r\n"
-	"--with-history (optional)\r\n"
-	"--output-type JOHN/LC (optional, if no=>JOHN)\r\n"
-	"--output FILE (optional, if no=>stdout)\r\n"
+	"-dhl  --dump-hash-local\r\n"
+	"-dhdc --dump-hash-domain-cached\r\n"
+	"-dhd  --dump-hash-domain (NTDS_FILE must be specified)\r\n"
+	"-db   --dump-bitlocker (NTDS_FILE must be specified)\r\n"
+	"-nt   --ntds-file FILE\r\n"
+	"-hist --with-history (optional)\r\n"
+	"-t    --output-type JOHN/LC (optional, if no=>JOHN)\r\n"
+	"-o    --output FILE (optional, if no=>stdout)\r\n"
 	"\r\nExample: quarks-pwdump.exe --dump-hash-domain --with-history\r\n"
 };
 

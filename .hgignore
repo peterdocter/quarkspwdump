@@ -1,0 +1,9 @@
+/Release$
+Release
+ipch
+/*.sdf
+/*.suo
+/*.ncb
+/*.exe
+/*.rar
+/*.zip

@@ -491,7 +491,6 @@ BOOL SAM_NTLM_DumpAll(ll_localAccountInfo localAccountInfo,NT_DUMP_TYPE dump_typ
 	TCHAR szHashLine[4096];
 	DWORD dwNbWritten,count=0;
 	HANDLE hFile;
-	BOOL ret;
 
 	if(!currentAccount)
 		return FALSE;

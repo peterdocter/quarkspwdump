@@ -4,7 +4,7 @@ ________                          __            __________          ________
 /   \_/.  \|  |  / / __ \_|  | \/|    <  \___ \  |    |     \     /  |    `   \|  |  /|  Y Y  \|  |_> >
 \_____\ \_/|____/ (____  /|__|   |__|_ \/____  > |____|      \/\_/  /_______  /|____/ |__|_|  /|   __/
        \__>            \/             \/     \/                             \/              \/ |__|
-                                                                           v0.1b -<(QuarksLab)>-
+                                                                           v0.2b -<(QuarksLab)>-
 
 
 0 / INTRO
@@ -38,15 +38,17 @@ Also it is still in beta test.
 
 Here it is how you can use Quarks PWDump:
 
-quarks-pwdump.exe <option(s)> <NTDS file>
- Options :
-	--dump-hash-local
-	--dump-hash-domain-cached
-	--dump-hash-domain (NTDS_FILE must be specified)
-	--dump-bitlocker (NTDS_FILE must be specified)
-	--with-history (optional)
-	--output-type JOHN/LC (optional, if no=>JOHN)
-	--output FILE (optional, if no=>stdout)
+quarks-pwdump.exe <options>
+	Options : 
+	-dhl  --dump-hash-local
+	-dhdc --dump-hash-domain-cached
+	-dhd  --dump-hash-domain (NTDS_FILE must be specified)
+	-db   --dump-bitlocker (NTDS_FILE must be specified)
+	-nt   --ntds-file FILE
+	-hist --with-history (optional)
+	-t    --output-type JOHN/LC (optional, if no=>JOHN)
+	-o    --output FILE (optional, if no=>stdout)
+	Example: quarks-pwdump.exe --dump-hash-domain --with-history
 
 Dump options must be user all at once.
 In all cases, the tool must be executed on the targeted operating system.
@@ -62,7 +64,7 @@ Some command examples:
    #quarks-pwdump.exe --dump-hash-local --output-type LC
    
 - Dump domain hashes from NTDS.dit with its history
-   #quarks-pwdump.exe --dump-bitlocker --output c:\bitlocker.txt c:\ntds.dit
+   #quarks-pwdump.exe --dump-bitlocker --output c:\bitlocker.txt --ntds-file c:\ntds.dit
 
 All features require administrator privileges.
 
@@ -98,6 +100,8 @@ All features require administrator privileges.
 3 / NOTES ON NTDS.DIT PARSING
 =============================
 
+1. Windows 2008
+
 Microsoft recently implements VSS (Volume Shadow Copy Service) which allow an administrator to make
 filesystem snapshots while the operating is running and writing to current backuped files.
 
@@ -113,6 +117,31 @@ Here is a way to backup NTDS.dit file while a domain controller is running:
  #quit
  #quit
 
+If AD server hasn't the "AD DS role", you have to use dsdbutil.exe command in the same way.
+
+
+2. Windows 2003
+
+On this version, VSS has been implemented but not NTDS-type snapshots.
+But you can use ntbackup tool, here is the procedure:
+
+- Launch NTBACKUP gui
+- Use backup wizard (advanced)
+- Choose to save system state only and choose output filename
+- Wait some minutes
+- Use restore wizard (advanced)
+- Choise your backup, click next and use advanced button
+- Choose to restore file on another location (c:\tmp\ for example)
+- Choose to overwrite everything and next uncheck all restoration parameters
+- Validate and wait some minutes
+- Open a command shell to "c:\tmp\Active Directory"
+- We need to repair the database with this command 
+ #esentutl /p ntds.dit
+- Validate warning and wait some minutes
+
+ntds.dit file can now be used with quarkspwdump.
+
+
 
 4 / TODO & ROAD MAP
 ===================
@@ -122,6 +151,7 @@ Here is a way to backup NTDS.dit file while a domain controller is running:
  - Use VSS COMM API to directly copy NTDS.dit file from our tool
  - Make tests on more environments with different configuration (NTLM storage GP, history size...)
  - Parsing specific Bitlocker TPM owner information in NTDS.dit
-
+ - Make the tool working full offline (from mounted image disk for example)
+ 
 
 contact@quarkslab.com

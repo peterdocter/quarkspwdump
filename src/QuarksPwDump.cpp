@@ -53,23 +53,24 @@ void ResizeConsole() {
  * Parse command line for command options
  */
 BOOL ParseCommandLine(int argc, TCHAR* argv[]) {
+	BOOL has_ntds = FALSE;
 
 	if(argc<2) 
 		return FALSE;
 
 	/* Parse */
 	for (int i = 1; i < argc; i++) {
-		if(!strcmp(argv[i],"--dump-hash-local"))
+		if((!strcmp(argv[i],"--dump-hash-local")) || (!strcmp(argv[i],"-dhl")))
 			OPT_DUMP_HASH_LOCAL = TRUE;
-		else if(!strcmp(argv[i],"--dump-hash-domain-cached"))
+		else if((!strcmp(argv[i],"--dump-hash-domain-cached")) || (!strcmp(argv[i],"-dhdc")))
 			OPT_DUMP_HASH_DOMAIN_CACHED = TRUE;
-		else if(!strcmp(argv[i],"--dump-hash-domain"))
+		else if((!strcmp(argv[i],"--dump-hash-domain")) || (!strcmp(argv[i],"--dhd")))
 			OPT_DUMP_HASH_DOMAIN = TRUE;
-		else if(!strcmp(argv[i],"--dump-bitlocker"))
+		else if((!strcmp(argv[i],"--dump-bitlocker")) || (!strcmp(argv[i],"-db")))
 			OPT_DUMP_BITLOCKER = TRUE;
-		else if(!strcmp(argv[i],"--with-history"))
+		else if((!strcmp(argv[i],"--with-history")) || (!strcmp(argv[i],"-hist")))
 			OPT_WITH_HISTORY = TRUE;
-		else if(!strcmp(argv[i],"--output-type")){
+		else if((!strcmp(argv[i],"--output-type")) || (!strcmp(argv[i],"-t"))){
 			if((i+1) < argc) {
 				if(!lstrcmp(argv[i+1],"LC"))
 					OPT_NT_DUMP_TYPE = NTDUMP_LC;
@@ -80,7 +81,16 @@ BOOL ParseCommandLine(int argc, TCHAR* argv[]) {
 			else
 				return FALSE;
 		}
-		else if(!strcmp(argv[i],"--output")){
+		else if((!strcmp(argv[i],"--ntds-file")) || (!strcmp(argv[i],"-nt"))){
+			if((i+1) < argc) {
+				lstrcpyn(OPT_NTDS_FILENAME,argv[i+1],MAX_PATH);
+				i++;
+				has_ntds = TRUE;
+			}
+			else
+				return FALSE;
+		}
+		else if((!strcmp(argv[i],"--output")) || (!strcmp(argv[i],"-o"))){
 			if((i+1) < argc) {
 				lstrcpyn(OPT_OUTPUT_FILENAME,argv[i+1],MAX_PATH);
 				OPT_OUT_STDOUT = FALSE;
@@ -94,7 +104,7 @@ BOOL ParseCommandLine(int argc, TCHAR* argv[]) {
 	/* Something choosed ? */
 	if(!(OPT_DUMP_HASH_LOCAL || OPT_DUMP_HASH_DOMAIN_CACHED || OPT_DUMP_HASH_DOMAIN || OPT_DUMP_BITLOCKER))
 		return FALSE;
-	
+
 	/* Check for conflicts */
 	if(OPT_DUMP_HASH_LOCAL && OPT_DUMP_HASH_DOMAIN_CACHED && OPT_DUMP_HASH_DOMAIN && OPT_DUMP_BITLOCKER)
 		return FALSE;
@@ -111,8 +121,8 @@ BOOL ParseCommandLine(int argc, TCHAR* argv[]) {
 	if(OPT_DUMP_BITLOCKER && (OPT_DUMP_HASH_DOMAIN_CACHED || OPT_DUMP_HASH_DOMAIN || OPT_DUMP_HASH_LOCAL))  
 		return FALSE;
 
-	if(OPT_DUMP_HASH_DOMAIN || OPT_DUMP_BITLOCKER)
-		lstrcpyn(OPT_NTDS_FILENAME,argv[argc-1],MAX_PATH);
+	if((OPT_DUMP_HASH_DOMAIN || OPT_DUMP_BITLOCKER) && !has_ntds)
+		return FALSE;
 
 	return TRUE;
 }
