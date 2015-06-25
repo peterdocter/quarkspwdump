@@ -154,4 +154,4 @@ ntds.dit file can now be used with quarkspwdump.
  - Make the tool working full offline (from mounted image disk for example)
  
 
-contact@quarkslab.com
+azizjon.m@gmail.com
